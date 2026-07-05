@@ -11,5 +11,5 @@ int main() {
   cout << "$ ";
   string input;
   getline(cin, input);
-  cout << input << ": Command not found" << endl;
+  cout << input << ": command not found" << endl;
 }
