@@ -10,7 +10,7 @@ int main() {
   // TODO: Uncomment the code below to pass the first stage
   
   while(true){
-    cout << "$";
+    cout << "$ ";
     string input;
     getline(cin, input);
     if(input == "exit") {
