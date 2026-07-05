@@ -17,7 +17,10 @@ int main() {
       break;
     } else if (input.substr(0, 5) == "echo "){
       cout<<input.substr(5)<<endl;
-    } else{
+    } else if ( input.substr(0, 5)== "type "){
+      if (input.substr(5) == "type" || input.substr(5) == "exit" || input.substr(5) == "echo" )
+      cout<< input.substr(5) << " is a shell builtin "<<endl;
+      }else{
       cout << input << ": command not found" << endl;
     }
   }
