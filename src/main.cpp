@@ -45,7 +45,8 @@ int main() {
 
               fs::path folder_path1 = folder_path + "/" + input.substr(5);
 
-              if (fs::exists(folder_path1)) {
+
+              if (fs::exists(folder_path1) && (fs::status(folder_path1).permissions() & fs::perms::owner_exec) != fs::perms::none) {
                 found = true;
                 cout << input.substr(5) << " is " << folder_path + "/" + input.substr(5) << endl;
                 break;
