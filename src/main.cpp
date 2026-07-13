@@ -80,7 +80,7 @@ int main() {
 
     else if (input.substr(0,2) == "cd"){
       string path;
-      if (input == "cd" || input == "cd "){
+      if (input == "cd" || input == "cd " || input.substr(3) == "~"){
           char* home = getenv("HOME");
           path = (home != nullptr)? home : "/" ;
 
