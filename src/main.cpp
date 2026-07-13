@@ -27,7 +27,7 @@ int main() {
     }
 
     else if (input.substr(0, 5) == "echo "){
-      for (int i = 0; i < input.substr(4).length(); i++){
+      for (int i = 1; i < input.substr(4).length(); i++){
         if (input.substr(4)[i] == '\'' || input.substr(4)[i] == '\"' ){
           continue;
         }else{
