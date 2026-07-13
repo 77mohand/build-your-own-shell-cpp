@@ -27,18 +27,23 @@ int main() {
     }
 
     else if (input.substr(0, 5) == "echo "){
-      for (int i = 1; i < input.substr(4).length(); i++){
-        if (input.substr(4)[i] == '\'' || input.substr(4)[i] == '\"' ){
-          continue;
-        }else{
-          cout<<input.substr(4)[i];
-        }
+      stringstream ss;
+      ss << input.substr(4);
+      vector<string> all_tokens;
+      string token;
 
+      while (ss >> token){
+        all_tokens.push_back(token);
+      }
+
+      for (size_t i =0; i<all_tokens.size(); i++){
+        cout<<all_tokens[i];
+        if (i < all_tokens.size() - 1){
+          cout << " ";
+        }
       }
 
       cout<<endl;
-
-
 
     }
 
