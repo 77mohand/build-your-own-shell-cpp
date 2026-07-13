@@ -45,7 +45,6 @@ int main() {
             string folder_path;
             bool found = false;
 
-      char* dynamic_cwd = getcwd(nullptr, 0);
             while (getline(ss, folder_path, ':')) {
 
               fs::path folder_path1 = folder_path + "/" + input.substr(5);
@@ -80,17 +79,19 @@ int main() {
     }
 
     else if (input.substr(0,2) == "cd"){
-        if (input == "cd"){
-          chdir("/home");
-          cout << "/home "<< endl;
-        }
-      else if (fs::exists(input.substr(3)) ){
-        chdir(input.substr(3).c_str());
-        cout << input.substr(3) << endl;
+      string path;
+      if (input == "cd" || input == "cd "){
+          char* home = getenv("HOME");
+          path = (home != nullptr)? home : "/" ;
+
       }else{
-        cout << input.substr(0,2) + ": " << input.substr(3) << ": No such file or directory" << endl;
+        path = input.substr(3);
       }
 
+      if (chdir(path.c_str()) == 0) {
+      } else {
+        cout << "cd: " << path << ": No such file or directory" << endl;
+      }
     }
 
 
