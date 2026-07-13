@@ -67,8 +67,15 @@ int main() {
 
     }
 
-    else if(input.substr(0,4) == "pwd"){
-      cout << fs::current_path().string()<< endl;
+    else if(input == "pwd"){
+      // cout << fs::current_path().string()<< endl; // ممكن تستخدم دي
+      char* dynamic_cwd = getcwd(nullptr, 0);
+      if(dynamic_cwd != nullptr){
+        cout<<dynamic_cwd<<endl;
+        free(dynamic_cwd);
+      }else{
+        perror("Dynamic getcwd faild");
+      }
     }
 
 
