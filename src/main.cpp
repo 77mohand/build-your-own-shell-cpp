@@ -27,7 +27,19 @@ int main() {
     }
 
     else if (input.substr(0, 5) == "echo "){
-      cout<<input.substr(5)<<endl;
+      for (int i = 0; i < input.substr(4).length(); i++){
+        if (input.substr(4)[i] == '\'' || input.substr(4)[i] == '\"' ){
+          continue;
+        }else{
+          cout<<input.substr(4)[i];
+        }
+
+      }
+
+      cout<<endl;
+
+
+
     }
 
     else if ( input.substr(0, 5)== "type "){
