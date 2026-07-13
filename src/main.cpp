@@ -67,6 +67,11 @@ int main() {
 
     }
 
+    else if(input == "pwd"){
+      cout << "Current path is " << fs::current_path()<< endl;
+    }
+
+
     else{
       stringstream sc;
 
