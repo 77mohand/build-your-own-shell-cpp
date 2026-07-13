@@ -4,6 +4,9 @@
 #include <cstdlib>
 #include <filesystem>
 #include <sstream>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <vector>
 using namespace std;
 namespace fs = std::filesystem;
 
@@ -18,6 +21,7 @@ int main() {
     cout << "$ ";
     string input;
     getline(cin, input);
+
     if(input == "exit") {
       break;
     }
@@ -64,8 +68,40 @@ int main() {
     }
 
     else{
-      cout << input<< ": command not found" << endl;
+      stringstream sc;
+
+      vector <string> command;
+      string token;
+      sc << input;
+
+      while (sc >> token){
+        command.push_back(token);
+      }
+
+      char *c_words[command.size() + 1];
+
+      for(size_t i = 0;  i < command.size(); i++ ){
+        c_words[i] = const_cast<char*>(command[i].c_str());
+      }
+
+      c_words[command.size() ] = nullptr;
+
+      pid_t pid = fork();
+      if(pid < 0){
+        perror("Fork failed");
+        return 1;
+      }
+      else if(pid == 0){
+          execvp(c_words[0], c_words);
+          cout << c_words[0] << ": command not found" << endl;
+          exit(1);
+      }
+      else{
+        int status;
+        waitpid(pid, &status, 0);
+      }
     }
 
   }
+
 }
