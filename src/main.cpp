@@ -16,7 +16,7 @@ int main() {
   cerr << unitbuf;
 
   // TODO: Uncomment the code below to pass the first stage
-  
+
   while(true){
     cout << "$ ";
     string input;
@@ -45,6 +45,7 @@ int main() {
             string folder_path;
             bool found = false;
 
+      char* dynamic_cwd = getcwd(nullptr, 0);
             while (getline(ss, folder_path, ':')) {
 
               fs::path folder_path1 = folder_path + "/" + input.substr(5);
@@ -67,7 +68,7 @@ int main() {
 
     }
 
-    else if(input == "pwd"){
+    else if(input == "pwd" || input.substr(0, 4) == "pwd "){
       // cout << fs::current_path().string()<< endl; // ممكن تستخدم دي
       char* dynamic_cwd = getcwd(nullptr, 0);
       if(dynamic_cwd != nullptr){
@@ -76,6 +77,20 @@ int main() {
       }else{
         perror("Dynamic getcwd faild");
       }
+    }
+
+    else if (input.substr(0,2) == "cd"){
+        if (input == "cd"){
+          chdir("/home");
+          cout << "/home "<< endl;
+        }
+      else if (fs::exists(input.substr(3)) ){
+        chdir(input.substr(3).c_str());
+        cout << input.substr(3) << endl;
+      }else{
+        cout << input.substr(0,2) + ": " << input.substr(3) << ": No such file or directory" << endl;
+      }
+
     }
 
 
