@@ -27,23 +27,36 @@ int main() {
     }
 
     else if (input.substr(0, 5) == "echo "){
-      stringstream ss;
-      ss << input.substr(4);
-      vector<string> all_tokens;
-      string token;
 
-      while (ss >> token){
-        all_tokens.push_back(token);
-      }
-
-      for (size_t i =0; i<all_tokens.size(); i++){
-        cout<<all_tokens[i];
-        if (i < all_tokens.size() - 1){
-          cout << " ";
+      if (input.length() < 4) continue;
+      string args = input.substr(4);
+      if (args.find('\'') != string::npos ){
+        for (int i = 0; i < args.length(); i++){
+          if (args[i] == '\''){
+            continue;
+          }else{
+            cout << args[i];
+          }
         }
-      }
+        cout<<endl;
 
-      cout<<endl;
+      }else{
+        stringstream ss(args);
+        vector<string> tokens;
+        string word;
+
+        while(ss >> word){
+          tokens.push_back(word);
+        }
+
+        for(size_t i =0; i< tokens.size(); i++){
+          cout<<tokens[i];
+          if(i < tokens.size()-1){
+            cout << " ";
+          }
+        }
+        cout<<endl;
+      }
 
     }
 
