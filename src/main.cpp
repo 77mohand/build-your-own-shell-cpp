@@ -29,7 +29,7 @@ int main() {
     else if (input.substr(0, 5) == "echo "){
 
       if (input.length() < 4) continue;
-      string args = input.substr(4);
+      string args = input.substr(5);
       if (args.find('\'') != string::npos ){
         for (int i = 0; i < args.length(); i++){
           if (args[i] == '\''){
