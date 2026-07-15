@@ -11,30 +11,39 @@ using namespace std;
 namespace fs = std::filesystem;
 
 vector<string>  parse_input(const string& input) {
-  bool status = false ;
+  bool in_double_quotes = false;
+  bool in_single_quotes = false;
   vector<string> tokens;
   string conten = "";
 
-  for (int i = 0; i < input.length(); i++)
-  {
+  for (int i = 0; i < input.length(); i++){
+    char current = input[i];
     if (input[i] == ('\"') ) {
-      status =! status;
+      if (in_single_quotes){
+        conten += current;
+      }else{
+      in_double_quotes =! in_double_quotes;
+      }
       continue;
     }
-    if (input[i] == '\'' && status == true){
-      if (!conten.empty() ){
-        tokens.push_back(conten);
-      }
 
+    if (input[i] == '\'' ){
+      if (in_double_quotes){
+        conten += current;
+      }else{
+        in_single_quotes =! in_single_quotes;
+      }
+      continue;
     }
 
-    if (input[i] == ' ' &&  status == false ){
-      if (!conten.empty()){
+    if (input[i] == ' '){
+      if (!in_single_quotes && !in_double_quotes){
         tokens.push_back(conten);
         conten = "";
       }
       continue;
     }
+
     conten += input[i];
 
   }
