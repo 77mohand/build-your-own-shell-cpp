@@ -10,6 +10,37 @@
 using namespace std;
 namespace fs = std::filesystem;
 
+vector<string>  parse_input(const string& input) {
+  bool status = false ;
+  vector<string> tokens;
+  string conten = "";
+
+  for (int i = 0; i < input.length(); i++)
+  {
+    if (input[i] == ('\'') ){
+      status =! status;
+      continue;
+    }
+    if (input[i] == ' ' &&  status == false ){
+      if (!conten.empty()){
+        tokens.push_back(conten);
+        conten = "";
+      }
+      continue;
+    }
+    conten += input[i];
+
+  }
+
+  if (!conten.empty()) {
+    tokens.push_back(conten);
+  }
+
+  return tokens;
+
+
+}
+
 int main() {
   // Flush after every std::cout / std:cerr
   cout << unitbuf;
@@ -27,37 +58,14 @@ int main() {
     }
 
     else if (input.substr(0, 5) == "echo "){
-
-      if (input.length() < 4) continue;
-      string args = input.substr(5);
-      if (args.find('\'') != string::npos ){
-        for (int i = 0; i < args.length(); i++){
-          if (args[i] == '\''){
-            continue;
-          }else{
-            cout << args[i];
-          }
+      vector <string> command = parse_input(input. substr(5));
+      for (size_t i = 0; i < command.size(); i++) {
+        cout << command[i];
+        if (i < command.size() - 1) {
+          cout << " ";
         }
-        cout<<endl;
-
-      }else{
-        stringstream ss(args);
-        vector<string> tokens;
-        string word;
-
-        while(ss >> word){
-          tokens.push_back(word);
-        }
-
-        for(size_t i =0; i< tokens.size(); i++){
-          cout<<tokens[i];
-          if(i < tokens.size()-1){
-            cout << " ";
-          }
-        }
-        cout<<endl;
       }
-
+      cout << endl; 
     }
 
     else if ( input.substr(0, 5)== "type "){
@@ -123,7 +131,6 @@ int main() {
         cout << "cd: " << path << ": No such file or directory" << endl;
       }
     }
-
 
     else{
       stringstream sc;
