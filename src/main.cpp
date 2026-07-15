@@ -65,7 +65,7 @@ int main() {
           cout << " ";
         }
       }
-      cout << endl; 
+      cout << endl;
     }
 
     else if ( input.substr(0, 5)== "type "){
@@ -133,15 +133,7 @@ int main() {
     }
 
     else{
-      stringstream sc;
-
-      vector <string> command;
-      string token;
-      sc << input;
-
-      while (sc >> token){
-        command.push_back(token);
-      }
+      vector <string> command = parse_input(input);
 
       char *c_words[command.size() + 1];
 
