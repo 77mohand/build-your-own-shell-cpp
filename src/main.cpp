@@ -17,10 +17,17 @@ vector<string>  parse_input(const string& input) {
 
   for (int i = 0; i < input.length(); i++)
   {
-    if (input[i] == ('\'') ){
+    if (input[i] == ('\"') ) {
       status =! status;
       continue;
     }
+    if (input[i] == '\'' && status == true){
+      if (!conten.empty() ){
+        tokens.push_back(conten);
+      }
+
+    }
+
     if (input[i] == ' ' &&  status == false ){
       if (!conten.empty()){
         tokens.push_back(conten);
