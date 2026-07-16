@@ -13,31 +13,50 @@ namespace fs = std::filesystem;
 vector<string>  parse_input(const string& input) {
   bool in_double_quotes = false;
   bool in_single_quotes = false;
+  bool back_slash = false;
+
   vector<string> tokens;
   string conten = "";
 
   for (int i = 0; i < input.length(); i++){
     char current = input[i];
-    if (input[i] == ('\"') ) {
-      if (in_single_quotes){
+
+    if (input[i] == '\\' ){
+      if (back_slash){
         conten += current;
+        back_slash = false;
+      }else{
+        back_slash = true;
+      }
+      continue;
+    }
+
+    if (input[i] == ('\"') ) {
+      if (in_single_quotes || back_slash){
+        conten += current;
+
       }else{
       in_double_quotes =! in_double_quotes;
       }
+      back_slash = false;
       continue;
     }
 
     if (input[i] == '\'' ){
-      if (in_double_quotes){
+      if (in_double_quotes || back_slash){
         conten += current;
+
       }else{
         in_single_quotes =! in_single_quotes;
       }
+      back_slash = false;
       continue;
     }
 
+
     if (input[i] == ' '){
-      if (!in_single_quotes && !in_double_quotes){
+      if (!in_single_quotes && !in_double_quotes && back_slash){
+        back_slash = false;
         if (!conten.empty()){
           tokens.push_back(conten);
           conten = "";
@@ -46,6 +65,7 @@ vector<string>  parse_input(const string& input) {
       }
     }
 
+    back_slash = false;
     conten += current;
 
   }
