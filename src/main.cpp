@@ -22,7 +22,7 @@ vector<string>  parse_input(const string& input) {
     char current = input[i];
 
     if (input[i] == '\\' ){
-      if (back_slash){
+      if (back_slash || in_single_quotes){
         conten += current;
         back_slash = false;
       }else{
@@ -60,6 +60,7 @@ vector<string>  parse_input(const string& input) {
           tokens.push_back(conten);
           conten = "";
         }
+        back_slash = false;
       continue;
       }
     }
