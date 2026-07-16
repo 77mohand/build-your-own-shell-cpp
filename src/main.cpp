@@ -56,11 +56,11 @@ vector<string>  parse_input(const string& input) {
 
     if (input[i] == ' '){
       if (!in_single_quotes && !in_double_quotes && back_slash){
-        back_slash = false;
         if (!conten.empty()){
           tokens.push_back(conten);
           conten = "";
         }
+      back_slash = false;
       continue;
       }
     }
