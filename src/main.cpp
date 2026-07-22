@@ -7,6 +7,11 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <vector>
+#include <fstream>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
 using namespace std;
 namespace fs = std::filesystem;
 
@@ -19,13 +24,18 @@ struct Command
 };
 
 void parse_redirection(Command& cmd){
+  cmd.redirect_stdout = false;
+  cmd.output_file = "";
+
   for ( size_t i = 0; i < cmd.args.size(); ++i ){
     if ( cmd.args[i]  == ">" || cmd.args[i] == "1>" ){
-      cmd.output_file = cmd.args[i+1];
-      cmd.redirect_stdout = true;
 
-      cmd.args.erase(cmd.args.begin() + i );
-      cmd.args.erase(cmd.args.begin() + i );
+      if (!cmd.args[i+1].empty()){
+        cmd.output_file = cmd.args[i+1];
+        cmd.redirect_stdout = true;
+        cmd.args.erase(cmd.args.begin() + i );
+        cmd.args.erase(cmd.args.begin() + i );
+      }
       break;
     }
   }
@@ -206,12 +216,21 @@ void execute_external( const Command& cmd ){
     perror("Fork failed");
     exit(-1);
   }
-  else if(pid == 0){
-    execvp(argv[0], argv);
-    cout << argv[0] << ": command not found" << endl;
-    exit(1);
-  }
-  else{
+   if(pid == 0)
+   {
+     if (cmd.redirect_stdout){
+       int fd = open( cmd.output_file.c_str() , O_WRONLY | O_CREAT | O_TRUNC, 0644);
+       if (fd == -1) {
+         perror("Error creating file");
+         exit(1);
+       }
+       dup2(fd, STDOUT_FILENO);
+       close(fd);
+     }
+       execvp(argv[0], argv);
+       cout << argv[0] << ": command not found" << endl;
+       exit(1);
+   }else{
     int status;
     waitpid(pid, &status, 0);
   }
@@ -264,3 +283,5 @@ int main() {
   }
 
 }
+
+
