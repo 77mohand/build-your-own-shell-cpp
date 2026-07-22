@@ -30,7 +30,7 @@ void parse_redirection(Command& cmd){
   for ( size_t i = 0; i < cmd.args.size(); ++i ){
     if ( cmd.args[i]  == ">" || cmd.args[i] == "1>" ){
 
-      if (!cmd.args[i+1].empty()){
+      if (i + 1 < cmd.args.size()){
         cmd.output_file = cmd.args[i+1];
         cmd.redirect_stdout = true;
         cmd.args.erase(cmd.args.begin() + i );
