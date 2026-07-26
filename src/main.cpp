@@ -20,7 +20,7 @@ struct Command
   string name;
   string output_file;
   vector<string> args;
-  bool redirect_stdout;
+  bool redirect_stdout = false;
 };
 
 void parse_redirection(Command& cmd){
@@ -131,13 +131,13 @@ void handle_echo(const Command& cmd){
       cout << " ";
     }
   }
-  cout << endl;
+  cout << "\n";
 }
 
 void handle_type(const Command& cmd){
 
   if (cmd.args[0] == "type" || cmd.args[0] == "exit" || cmd.args[0] == "echo" || cmd.args[0] == "pwd") {
-    cout<< cmd.args[0] << " is a shell builtin "<<endl;
+    cout<< cmd.args[0] << " is a shell builtin \n";
   }else {
 
     char *path_env = getenv("PATH");
@@ -156,15 +156,15 @@ void handle_type(const Command& cmd){
 
         if (fs::exists(folder_path1) && (fs::status(folder_path1).permissions() & fs::perms::owner_exec) != fs::perms::none) {
           found = true;
-          cout << cmd.args[0] << " is " << folder_path + "/" + cmd.args[0] << endl;
+          cout << cmd.args[0] << " is " << folder_path + "/" + cmd.args[0] << "\n";
           break;
         }
       }
       if (!found) {
-        cout << cmd.args[0] << ": not found" << endl;
+        cout << cmd.args[0] << ": not found\n";
       }
     }else {
-      cout<< "PATH environment variable is not set." << endl;
+      cout<< "PATH environment variable is not set.\n";
     }
 
   }
@@ -175,7 +175,7 @@ void handle_pwd( const Command& cmd ){
   // cout << fs::current_path().string()<< endl; // ممكن تستخدم دي
   char* dynamic_cwd = getcwd(nullptr, 0);
   if(dynamic_cwd != nullptr){
-    cout<<dynamic_cwd<<endl;
+    cout<<dynamic_cwd<<"\n";
     free(dynamic_cwd);
   }else{
     perror("Dynamic getcwd faild");
@@ -195,7 +195,7 @@ void handle_cd( const Command& cmd ){
 
   if (chdir(path.c_str()) == 0) {
   } else {
-    cout << "cd: " << path << ": No such file or directory" << endl;
+    cout << "cd: " << path << ": No such file or directory\n";
   }
 
 }
@@ -216,9 +216,9 @@ void execute_external( const Command& cmd ){
     perror("Fork failed");
     exit(-1);
   }
-   if(pid == 0)
-   {
-     if (cmd.redirect_stdout){
+   if(pid == 0){
+
+     if (cmd.redirect_stdout ){
        int fd = open( cmd.output_file.c_str() , O_WRONLY | O_CREAT | O_TRUNC, 0644);
        if (fd == -1) {
          perror("Error creating file");
@@ -228,7 +228,7 @@ void execute_external( const Command& cmd ){
        close(fd);
      }
        execvp(argv[0], argv);
-       cout << argv[0] << ": command not found" << endl;
+       cout << argv[0] << ": command not found\n";
        exit(1);
    }else{
     int status;
@@ -239,20 +239,31 @@ void execute_external( const Command& cmd ){
 void execute_line(const string& input)
 {
     Command cmd = parse_input(input);
+
     if(cmd.name == "exit") {
         exit(0);
       }
 
-    else if (cmd.name == "echo"){
-      handle_echo(cmd);
-    }
+    if (cmd.redirect_stdout ){
 
-    else if ( cmd.name== "type"){
-       handle_type( cmd);
-    }
+      streambuf* original_buf = cout.rdbuf();
+      ofstream file(cmd.output_file);
+      cout.rdbuf(file.rdbuf());
 
-    else if(cmd.name == "pwd"){
-       handle_pwd(cmd);
+      if (cmd.name == "echo"){
+        handle_echo(cmd);
+      }
+
+      else if ( cmd.name== "type"){
+        handle_type( cmd);
+      }
+
+      else if(cmd.name == "pwd"){
+        handle_pwd(cmd);
+      }
+
+      cout.rdbuf(original_buf);
+
     }
 
     else if (cmd.name == "cd"){
