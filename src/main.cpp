@@ -248,7 +248,7 @@ void execute_line(const string& input)
 
       streambuf* original_buf = cout.rdbuf();
       ofstream file(cmd.output_file);
-      cout.rdbuf(file.rdbuf());
+      cout.rdbuf(file.rdbuf());                   
 
       if (cmd.name == "echo"){
         handle_echo(cmd);
